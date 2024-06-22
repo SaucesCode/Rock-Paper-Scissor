@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rock Paper Scissor Game</title>
+    <link
+      rel="shortcut icon"
+      href="rock-paper-scissors.png"
+      type="image/x-icon"
+    />
+    <style>
+      @font-face {
+        font-family: myfont;
+        src: url(god-of-war.ttf);
+      }
+      @font-face {
+        font-family: myfont2;
+        src: url(Ldfcomicsansbold-zgma.ttf);
+      }
+
+      * {
+        padding: 0;
+        margin: 0;
+      }
+
+      body {
+        background: linear-gradient(to right, #a1c4fd, #c2e9fb);
+      }
+
+      .container {
+        background-color: white;
+        width: 40%;
+        font-size: 40px;
+        margin: 0 auto;
+        padding: 15px;
+        margin-top: 40px;
+        box-shadow: 2px 3px 5px 5px black;
+        border-radius: 10px;
+      }
+
+      .container h1 {
+        text-align: center;
+        font-family: myfont;
+        color: rgb(65, 65, 129);
+        margin-bottom: 60px;
+      }
+
+      .container div {
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .container div p {
+        margin: 10px auto;
+        padding: 10px;
+        font-family: myfont2;
+      }
+
+      .container img {
+        width: 100px;
+        height: auto;
+      }
+
+      button {
+        display: block;
+        margin: 20px auto;
+        padding: 10px 20px;
+        font-size: 1.2em;
+        cursor: pointer;
+        border-radius: 10px;
+        border: none;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+      }
+
+      button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+      }
+
+      button:active {
+        transform: translateY(2px);
+        box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+      }
+
+      #result {
+        font-family: myfont2;
+        display: block;
+        margin: 0 auto;
+        font-size: 40px;
+        font-weight: bold;
+        text-align: center;
+      }
+
+      @media screen and (max-width: 930px) {
+        .container {
+          font-size: 30px;
+          width: 90%;
+        }
+
+        .hands img {
+          width: 100px;
+        }
+
+        button {
+          font-size: 1.2em;
+        }
+      }
+
+      @media screen and (max-width: 600px) {
+        .container {
+          font-size: 24px;
+          width: 90%;
+        }
+
+        .hands img {
+          width: 100px;
+        }
+
+        button {
+          font-size: 1.2em;
+        }
+      }
+
+      @media screen and (max-width: 415px) {
+        .container {
+          font-size: 18px;
+          width: 85%;
+        }
+
+        .hands img {
+          width: 100px;
+        }
+
+        button {
+          font-size: 1.2em;
+        }
+      }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+  </head>
+  <body>
+    <div class="container" id="gameContainer">
+      <h1>Rock Paper Scissor</h1>
+      <div>
+        <p>Player/You:</p>
+        <p>Computer:</p>
+      </div>
+      <div>
+        <p id="hand1"><img src="wave.gif" alt="Paper" /></p>
+        <p id="hand2"><img src="wave.gif" alt="Paper" /></p>
+      </div>
+      <span id="result">Result</span>
+      <br />
+      <div class="scores">
+        <p>Player Score: <span id="playerscore">0</span></p>
+        <p>Computer Score: <span id="computerscore">0</span></p>
+      </div>
+      <button onclick="start()">Start</button>
+    </div>
+    <script>
+      const hands = [
+        { name: "Rock", img: "rise.gif" },
+        { name: "Paper", img: "wave.gif" },
+        { name: "Scissors", img: "two.gif" },
+      ];
+
+      const hand1 = document
+        .getElementById("hand1")
+        .getElementsByTagName("img")[0];
+      const hand2 = document
+        .getElementById("hand2")
+        .getElementsByTagName("img")[0];
+      const result = document.getElementById("result");
+      const container = document.getElementById("gameContainer");
+
+      let playerscore = 0;
+      let computerscore = 0;
+
+      function start() {
+        const randomhand1 = hands[Math.floor(Math.random() * hands.length)];
+        const randomhand2 = hands[Math.floor(Math.random() * hands.length)];
+
+        hand1.src = randomhand1.img;
+        hand2.src = randomhand2.img;
+        hand1.alt = randomhand1.name;
+        hand2.alt = randomhand2.name;
+
+        if (randomhand1.name === randomhand2.name) {
+          result.innerHTML = "It's a tie 👍";
+          result.style.color = "Black";
+        } else if (
+          (randomhand1.name === "Rock" && randomhand2.name === "Scissors") ||
+          (randomhand1.name === "Paper" && randomhand2.name === "Rock") ||
+          (randomhand1.name === "Scissors" && randomhand2.name === "Paper")
+        ) {
+          result.innerHTML = "Player wins 😁";
+          playerscore++;
+          document.getElementById("playerscore").innerText = playerscore;
+          result.style.color = "Green";
+          launchConfetti();
+        } else {
+          result.innerHTML = "Computer wins 😒";
+          computerscore++;
+          document.getElementById("computerscore").innerText = computerscore;
+          result.style.color = "Red";
+        }
+      }
+
+      function launchConfetti() {
+        const duration = 2 * 1000;
+        const end = Date.now() + duration;
+
+        (function frame() {
+          // Launch confetti from the top
+          confetti({
+            particleCount: 3,
+            angle: 60,
+            spread: 55,
+            origin: { x: 0 },
+          });
+          confetti({
+            particleCount: 3,
+            angle: 120,
+            spread: 55,
+            origin: { x: 1 },
+          });
+
+          if (Date.now() < end) {
+            requestAnimationFrame(frame);
+          }
+        })();
+      }
+    </script>
+  </body>
+</html>
